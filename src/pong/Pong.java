@@ -7,21 +7,17 @@ package pong;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import static javafx.scene.paint.Color.color;
-import static javafx.scene.paint.Color.color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -38,10 +34,11 @@ public class Pong extends Application {
      double gravityY2 = 0;
      double startpelotax = (WORLD_WIDTH/2)-5;
      double startpelotay = 90;
-     double scorej1 = 0;
-     double scorej2 = 0;
+     int scorej1 = 0;
+     int scorej2 = -1;
      int startpala1x = 20;
-     
+     String marcador1 = String.valueOf(scorej1);
+     String marcador2 = String.valueOf(scorej2);
     @Override
     public void start(Stage primaryStage) {
          Group root = new Group();
@@ -51,15 +48,15 @@ public class Pong extends Application {
          primaryStage.show();
          
          Rectangle lineacentral = new Rectangle(6, 400);
-         lineacentral.setTranslateX(294);
+         lineacentral.setTranslateX(293);
          
          Rectangle pala1 = new Rectangle(10, 50);
          pala1.setTranslateX(20);
-         pala1.setTranslateY(90);
+         pala1.setTranslateY(100);
          
          Rectangle pala2 = new Rectangle(10, 50);
          pala2.setTranslateX(570);
-         pala2.setTranslateY(10);
+         pala2.setTranslateY(100);
          
          Circle pelota = new Circle(10,Color.WHITE);
          //pelota.setTranslateX(pelotainicialx);
@@ -74,13 +71,16 @@ public class Pong extends Application {
          root.getChildren().add(pala1);
          root.getChildren().add(pala2);
          
-         Text score = new Text(String.valueOf(dirx));
-         score.setFont(Font.font(STYLESHEET_CASPIAN));
-         score.setFill(Color.WHITE);
-         root.getChildren().add(score);
+         Text score1 = new Text(220,60,marcador1);
+         score1.setFont(Font.font("Comic Sans MS", FontWeight.BOLD, 50));
+         score1.setFill(Color.GREY);
+         root.getChildren().add(score1);
          
-
-        
+         Text score2 = new Text(340,60,marcador2);
+         score2.setFont(Font.font("Comic Sans MS", FontWeight.BOLD, 50));
+         score2.setFill(Color.GREY);
+         root.getChildren().add(score2);
+         
          
          new AnimationTimer() {
             @Override
@@ -95,30 +95,55 @@ public class Pong extends Application {
                 pelota.setTranslateX(posx + dirx);
                 pala1.setTranslateY(posy1 + gravityY1);
                 pala2.setTranslateY(posy2 + gravityY2);
-                //Cambio de direccion al llegar al borde
-//                if (posx + dirx <= 5){
-//                   dirx = 3;
-//                } if (posx + dirx >= 595){
-//                   dirx = - 3;
+                //Reinicio si no choca en las palas
+                if (posx + dirx <= 5){
+                       double x = Math.random();
+                       double x2 = Math.random();
+                       root.getChildren().remove(pelota);
+                       root.getChildren().add(pelota);
+                       pelota.setTranslateX(startpelotax);
+                       pelota.setTranslateY(startpelotay);    
+                      scorej2++;
+                      marcador2 = String.valueOf(scorej2);
+                       score2.setText(marcador2);
+                } if (posx + dirx >= 595){
+                        double x = Math.random();
+                        double x2 = Math.random();
+                        root.getChildren().remove(pelota);
+                        root.getChildren().add(pelota);
+                        pelota.setTranslateX(startpelotax);
+                        pelota.setTranslateY(startpelotay);
+                        scorej1++;
+                        marcador1 = String.valueOf(scorej1);
+                        score1.setText(marcador1);
+                }
+                //Rebote bordes superior e inferior
                  if (posy + diry <= 5){
                    diry = 3;
                 } if (posy + diry >= 395){
                    diry = - 3;                         
-                } if (posy1 + gravityY1 <= 3){
+                }
+                //Limite de movimiento de las palas
+                if (posy1 + gravityY1 <= 5){
                    gravityY1 = 0; 
-                } if (posy1 + gravityY1 >= 348){
+                } if (posy1 + gravityY1 >= 345){
                   gravityY1 = 0;
-                } if (posy2 + gravityY2 <= 1){
+                } if (posy2 + gravityY2 <= 5){
                    gravityY2 = 0; 
-                } if (posy2 + gravityY2 >= 348){
+                } if (posy2 + gravityY2 >= 345){
                   gravityY2 = 0;
                 }
                 //Cambio de direccion al tocar la pala
-                if (pelota.getTranslateX()+13 <=  pala1.getTranslateX()+33){
-                    if (pelota.getTranslateY()+13 >= pala1.getTranslateY()+33 && pelota.getTranslateY() <= pala1.getTranslateY()+50){
+                if (pelota.getTranslateX() + 13 <=  pala1.getTranslateX()+33){
+                    if (pelota.getTranslateY() >= pala1.getTranslateY()-33 && pelota.getTranslateY() <= pala1.getTranslateY()+50){
                     dirx = 3;
                     }
-                }
+                } 
+                if (pelota.getTranslateX()-13 >=  pala2.getTranslateX()-23){
+                    if (pelota.getTranslateY() >= pala2.getTranslateY()-33 && pelota.getTranslateY() <= pala2.getTranslateY()+50){
+                    dirx = -3;
+                    }
+                } 
                
             }
          }.start();
@@ -126,24 +151,36 @@ public class Pong extends Application {
          scene.setOnKeyPressed(new EventHandler<KeyEvent> () {
              @Override
              public void handle(KeyEvent event) {
-                  double posy1 = pala1.getTranslateY();
+                 double posy1 = pala1.getTranslateY();
+                 double posy2 = pala2.getTranslateY();
                  switch (event.getCode())  {                  
                      case W:                      
-                         if (posy1 + gravityY1 <= 3){
+                         if (posy1 + gravityY1 <= 5){
                             gravityY1 = 0; 
-                         } else gravityY1 = - 3;
+                         } else gravityY1 = - 5;
                          break;
                      case S:
-  
-                         gravityY1 = 3;
+                        if (posy1 + gravityY1 >= 345){
+                            gravityY1 = 0;
+                        } else gravityY1 = 5;
                          break;
                      case DOWN:
-                         gravityY2 =  3;
+                         if (posy2 + gravityY2 >= 345){
+                            gravityY2 = 0;
+                          } else gravityY2 =  5;
                          break;
                      case UP:
-                         gravityY2 = - 3;
+                          if (posy2 + gravityY2 <= 5){
+                              gravityY2 = 0; 
+                          } else gravityY2 = - 5;
                          break;    
                      case SPACE:
+                         scorej1 = 0;
+                         marcador1 = String.valueOf(scorej1);
+                         score1.setText(marcador1);
+                         scorej2 = -1;
+                         marcador2 = String.valueOf(scorej2);
+                         score2.setText(marcador2);
                          double x = Math.random();
                          double x2 = Math.random();
                          root.getChildren().remove(pelota);
@@ -158,6 +195,11 @@ public class Pong extends Application {
                             diry = -3;
                          }  else{
                              diry = 3;}
+                     
+                     case U:
+                         scorej2++;
+                         marcador2 = String.valueOf(scorej2);
+                         score2.setText(marcador2);
                  }
              }
          } );
