@@ -88,19 +88,19 @@ public class Pong extends Application {
               
                 double posx = pelota. getTranslateX();
                 double posy = pelota.getTranslateY();
-                double posy1 = pala1.getTranslateY();
-                double posy2 = pala2.getTranslateY();
+                double posxpala1 = pala1.getTranslateX();
+                double posxpala2 = pala2.getTranslateX();
+                double posypala1 = pala1.getTranslateY();
+                double posypala2 = pala2.getTranslateY();
                 
                 pelota.setTranslateY(posy + diry);
                 pelota.setTranslateX(posx + dirx);
-                pala1.setTranslateY(posy1 + gravityY1);
-                pala2.setTranslateY(posy2 + gravityY2);
+                pala1.setTranslateY(posypala1 + gravityY1);
+                pala2.setTranslateY(posypala2 + gravityY2);
                 //Reinicio si no choca en las palas
                 if (posx + dirx <= 5){
                        double x = Math.random();
                        double x2 = Math.random();
-                       root.getChildren().remove(pelota);
-                       root.getChildren().add(pelota);
                        pelota.setTranslateX(startpelotax);
                        pelota.setTranslateY(startpelotay);    
                       scorej2++;
@@ -109,8 +109,6 @@ public class Pong extends Application {
                 } if (posx + dirx >= 595){
                         double x = Math.random();
                         double x2 = Math.random();
-                        root.getChildren().remove(pelota);
-                        root.getChildren().add(pelota);
                         pelota.setTranslateX(startpelotax);
                         pelota.setTranslateY(startpelotay);
                         scorej1++;
@@ -124,23 +122,25 @@ public class Pong extends Application {
                    diry = - 3;                         
                 }
                 //Limite de movimiento de las palas
-                if (posy1 + gravityY1 <= 5){
+                if (posypala1 + gravityY1 <= 5){
                    gravityY1 = 0; 
-                } if (posy1 + gravityY1 >= 345){
+                } if (posypala1 + gravityY1 >= 345){
                   gravityY1 = 0;
-                } if (posy2 + gravityY2 <= 5){
+                }
+                
+                if (posypala2 + gravityY2 <= 5){
                    gravityY2 = 0; 
-                } if (posy2 + gravityY2 >= 345){
+                } if (posypala2 + gravityY2 >= 345){
                   gravityY2 = 0;
                 }
                 //Cambio de direccion al tocar la pala
-                if (pelota.getTranslateX() + 13 <=  pala1.getTranslateX()+33){
-                    if (pelota.getTranslateY() >= pala1.getTranslateY()-33 && pelota.getTranslateY() <= pala1.getTranslateY()+50){
-                    dirx = 3;
+                if (posx + 13 <=  posxpala1+33){
+                    if (posy >= posypala1-33 && posy <= posypala1+50){
+                        dirx = 3;
                     }
                 } 
-                if (pelota.getTranslateX()-13 >=  pala2.getTranslateX()-23){
-                    if (pelota.getTranslateY() >= pala2.getTranslateY()-33 && pelota.getTranslateY() <= pala2.getTranslateY()+50){
+                if (posx-13 >=  posxpala2-23){
+                    if (posy >= posypala2-33 && posy <= posypala2+50){
                     dirx = -3;
                     }
                 } 
@@ -157,12 +157,15 @@ public class Pong extends Application {
                      case W:                      
                          if (posy1 + gravityY1 <= 5){
                             gravityY1 = 0; 
-                         } else gravityY1 = - 5;
+                         } else {
+                             gravityY1 = - 5;
+                         }
                          break;
                      case S:
                         if (posy1 + gravityY1 >= 345){
                             gravityY1 = 0;
-                        } else gravityY1 = 5;
+                        } else
+                            gravityY1 = 5;
                          break;
                      case DOWN:
                          if (posy2 + gravityY2 >= 345){
@@ -178,13 +181,13 @@ public class Pong extends Application {
                          scorej1 = 0;
                          marcador1 = String.valueOf(scorej1);
                          score1.setText(marcador1);
-                         scorej2 = -1;
+                         scorej2 = 0;
                          marcador2 = String.valueOf(scorej2);
                          score2.setText(marcador2);
                          double x = Math.random();
                          double x2 = Math.random();
-                         root.getChildren().remove(pelota);
-                         root.getChildren().add(pelota);
+//                         root.getChildren().remove(pelota);
+//                         root.getChildren().add(pelota);
                          pelota.setTranslateX(startpelotax);
                          pelota.setTranslateY(startpelotay);
                          if (x <=0.5) {
@@ -195,11 +198,12 @@ public class Pong extends Application {
                             diry = -3;
                          }  else{
                              diry = 3;}
-                     
+                          break;
                      case U:
                          scorej2++;
                          marcador2 = String.valueOf(scorej2);
                          score2.setText(marcador2);
+                         break;
                  }
              }
          } );
